@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 enum Glasses {
 	SMALL = 75,
 	MIDD = 125,
@@ -8,7 +10,6 @@ enum Glasses {
 
 class ICoffeeMachine {
 public:
-	virtual bool MakeAmericano(Glasses) = 0;
-	virtual bool MakeLatte(Glasses) = 0;
-	virtual ~ICoffeeMachine() {}
+	virtual bool MakeRecept(std::string const& name, Glasses glass) = 0;
+	virtual ~ICoffeeMachine() = default;
 };

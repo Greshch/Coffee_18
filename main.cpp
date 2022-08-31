@@ -4,10 +4,25 @@
 int main() {
 	MyCoffeeMachine machine;
 	machine.Load();
-	machine.SetAmericanoRecipe(15, 1, 10);
-	machine.SetLatteRecipe(10, 1, 15);
-	machine.MakeAmericano(Glasses::MIDD);
-	machine.MakeLatte(Glasses::SMALL);
 
+	if (!machine.SetRecipe(15, 1, 10, "Americano"))
+	{
+		std::cout << "Set recept error!!..\n";
+	}
+
+	if (!machine.SetRecipe(10, 1, 15, "Latte"))
+	{
+		std::cout << "Set recept error!!..\n";
+	}
+
+	machine.PrintRecipes();
+	std::cout << "Choose name of recepi: ";
+	std::string name;
+	std::cin >> name;
+	if (machine.MakeRecept(name, Glasses::SMALL))
+	{
+		Recept* recipe = machine.GetRecipe(name);
+		machine.Print(recipe, Glasses::SMALL);
+	}
 	return 0;
 }

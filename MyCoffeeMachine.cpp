@@ -30,114 +30,79 @@ bool MyCoffeeMachine::AddWater(uint32_t water)
 	return AddComponent(m_water, water, waterTankVol);
 }
 
-bool MyCoffeeMachine::SetAmericanoRecipe(uint32_t water, uint32_t sugar, uint32_t milk)
-{
-	if (!IsValidRecepte(water, sugar, milk))
-	{
-		return false;
-	}
-
-	m_americanoWater = water;
-	m_americanoMilk = milk;
-	m_americanoSugar = sugar;
-	return true;
-}
-
-bool MyCoffeeMachine::SetLatteRecipe(uint32_t water, uint32_t sugar, uint32_t milk)
-{
-	if (!IsValidRecepte(water, sugar, milk))
-	{
-		return false;
-	}
-
-	m_lateWater = water;
-	m_lateMilk = milk;
-	m_lateSugar = sugar;
-	return true;
-}
-
-bool MyCoffeeMachine::MakeAmericano(Glasses glass)
-{
-	uint32_t expected = static_cast<uint32_t>(glass);
-	uint32_t total = GetTotalVolume();
-	uint32_t expectedCoffee = GetExpectedCoffeForGlass(glass);
-	uint32_t expectedMilk = GetExpectedMilkForGlass(glass, m_americanoWater, m_americanoSugar,
-		m_americanoMilk);
-
-	uint32_t expectedSugar = GetExpectedSugarForGlass(glass, m_americanoWater, m_americanoSugar,
-		m_americanoMilk);
-
-	uint32_t expectedWater = GetExpectedWaterForGlass(glass, m_americanoWater, m_americanoSugar,
-		m_americanoMilk);
-	
-	if (expected > total)
-	{
-		return false;
-	}
-
-	if (!IsValid(expectedCoffee, expectedWater, expectedSugar, expectedMilk))
-	{
-		return false;
-	}
-
-	m_coffee -= expectedCoffee;
-	m_milk -= expectedMilk;
-	m_sugar -= expectedSugar;
-	m_water -= expectedWater;
-	 
-	PrintAmericano(glass, expectedCoffee, expectedWater, expectedSugar, expectedMilk);
-	return true;
-}
-
-bool MyCoffeeMachine::MakeLatte(Glasses glass)
-{
-	uint32_t expected = static_cast<uint32_t>(glass);
-	uint32_t total = GetTotalVolume();
-	uint32_t expectedCoffee = GetExpectedCoffeForGlass(glass);
-	uint32_t expectedMilk = GetExpectedMilkForGlass(glass, m_lateWater, m_lateSugar,
-		m_lateMilk);
-
-	uint32_t expectedSugar = GetExpectedSugarForGlass(glass, m_lateWater, m_lateSugar,
-		m_lateMilk);
-
-	uint32_t expectedWater = GetExpectedWaterForGlass(glass, m_lateWater, m_lateSugar,
-		m_lateMilk);
-
-	if (expected > total)
-	{
-		return false;
-	}
-
-	if (!IsValid(expectedCoffee, expectedWater, expectedSugar, expectedMilk))
-	{
-		return false;
-	}
-
-	m_coffee -= expectedCoffee;
-	m_milk -= expectedMilk;
-	m_sugar -= expectedSugar;
-	m_water -= expectedWater;
-
-	PrintLatte(glass, expectedCoffee, expectedWater, expectedSugar, expectedMilk);
-	return true;
-}
-
 uint32_t MyCoffeeMachine::GetTotalVolume() const
 {
 	return m_milk + m_sugar + m_water;
 }
 
-void MyCoffeeMachine::PrintAmericano(Glasses glas, uint32_t coffee, uint32_t water, uint32_t sugar, uint32_t milk) const
+void MyCoffeeMachine::PrintRecipes() const
 {
-	Print("Americano's", glas, coffee, water, sugar, milk);
+	for (auto const& r : m_recepts)
+	{
+		std::cout << r.m_name << "\n";
+	}
 }
 
-void MyCoffeeMachine::PrintLatte(Glasses glas, uint32_t coffee, uint32_t water, uint32_t sugar, uint32_t milk) const
+bool MyCoffeeMachine::SetRecipe(uint32_t milk, uint32_t sugar, uint32_t water, std::string const& name)
 {
-	Print("Latte's", glas, coffee, water, sugar, milk);
+	if (!IsValidRecepte(water, sugar, milk))
+	{
+		return false;
+	}
+
+	m_recepts.push_back({ milk, sugar, water, name });
+	return true;
 }
 
-uint32_t MyCoffeeMachine::GetExpectedCoffeForGlass(Glasses glass)
+bool MyCoffeeMachine::MakeRecept(std::string const& name, Glasses glass)
+{
+	Recept* recept = GetRecipe(name);
+	if (recept == nullptr)
+	{
+		return false;
+	}
+	uint32_t expected = static_cast<uint32_t>(glass);
+	uint32_t total = GetTotalVolume();
+	uint32_t expectedCoffee = GetExpectedCoffeForGlass(glass);
+	uint32_t expectedMilk = GetExpectedMilkForGlass(glass, recept->m_water, recept->m_sugar,
+		recept->m_milk);
+
+	uint32_t expectedSugar = GetExpectedSugarForGlass(glass, recept->m_water, recept->m_sugar,
+		recept->m_milk);
+
+	uint32_t expectedWater = GetExpectedWaterForGlass(glass, recept->m_water, recept->m_sugar,
+		recept->m_milk);
+
+	if (expected > total)
+	{
+		return false;
+	}
+
+	if (!IsValid(expectedCoffee, expectedWater, expectedSugar, expectedMilk))
+	{
+		return false;
+	}
+
+	m_coffee -= expectedCoffee;
+	m_milk -= expectedMilk;
+	m_sugar -= expectedSugar;
+	m_water -= expectedWater;
+	return true;
+}
+
+Recept* MyCoffeeMachine::GetRecipe(std::string const& name)
+{
+	for (auto & recipe : m_recepts)
+	{
+		if (recipe.m_name == name)
+		{
+			return &recipe;
+		}
+	}
+	return nullptr;
+}
+
+uint32_t MyCoffeeMachine::GetExpectedCoffeForGlass(Glasses glass) const
 {
 	switch (glass)
 	{
@@ -159,25 +124,25 @@ uint32_t MyCoffeeMachine::GetExpectedCoffeForGlass(Glasses glass)
 	}
 }
 
-uint32_t MyCoffeeMachine::GetExpectedMilkForGlass(Glasses glass, uint32_t water, uint32_t sugar, uint32_t milk)
+uint32_t MyCoffeeMachine::GetExpectedMilkForGlass(Glasses glass, uint32_t water, uint32_t sugar, uint32_t milk) const
 {
 	double d_milk = GetExpextedComponent(glass, milk, water, sugar);
 	return static_cast<uint32_t>(ceil(d_milk));
 }
 
-uint32_t MyCoffeeMachine::GetExpectedSugarForGlass(Glasses glass, uint32_t water, uint32_t sugar, uint32_t milk)
+uint32_t MyCoffeeMachine::GetExpectedSugarForGlass(Glasses glass, uint32_t water, uint32_t sugar, uint32_t milk) const
 {
 	double d_sugar = GetExpextedComponent(glass, sugar, water, milk);
 	return static_cast<uint32_t>(ceil(d_sugar));
 }
 
-uint32_t MyCoffeeMachine::GetExpectedWaterForGlass(Glasses glass, uint32_t water, uint32_t sugar, uint32_t milk)
+uint32_t MyCoffeeMachine::GetExpectedWaterForGlass(Glasses glass, uint32_t water, uint32_t sugar, uint32_t milk) const
 {
 	double d_water = GetExpextedComponent(glass, water, sugar, milk);
 	return static_cast<uint32_t>(ceil(d_water));
 }
 
-bool MyCoffeeMachine::IsValidRecepte(uint32_t water, uint32_t sugar, uint32_t milk)
+bool MyCoffeeMachine::IsValidRecepte(uint32_t water, uint32_t sugar, uint32_t milk) const
 {
 	if (water > m_water)
 	{
@@ -196,7 +161,7 @@ bool MyCoffeeMachine::IsValidRecepte(uint32_t water, uint32_t sugar, uint32_t mi
 	return true;
 }
 
-bool MyCoffeeMachine::IsValid(uint32_t coffee, uint32_t water, uint32_t sugar, uint32_t milk)
+bool MyCoffeeMachine::IsValid(uint32_t coffee, uint32_t water, uint32_t sugar, uint32_t milk) const
 {
 	if (coffee > m_coffee)
 	{
@@ -232,21 +197,36 @@ void MyCoffeeMachine::Print(uint32_t coffee, uint32_t water, uint32_t sugar, uin
 	cout << "**********************************************\n";
 }
 
-void MyCoffeeMachine::Print(char const* str, Glasses glas, uint32_t coffee, uint32_t water, uint32_t sugar, uint32_t milk) const
+void MyCoffeeMachine::Print(Recept const* r, Glasses glas) const
+{
+	uint32_t curCoffee = GetExpectedCoffeForGlass(glas);
+	uint32_t curWater = GetExpectedWaterForGlass(glas, r->m_water, r->m_sugar, r->m_milk);
+	uint32_t curSugar = GetExpectedSugarForGlass(glas, r->m_water, r->m_sugar, r->m_milk);
+	uint32_t curMilk = GetExpectedMilkForGlass(glas, r->m_water, r->m_sugar, r->m_milk);
+
+	Print(r->m_name,
+		glas, 
+		curCoffee, 
+		curWater, 
+		curSugar, 
+		curMilk);
+}
+
+void MyCoffeeMachine::Print(std::string const& name, Glasses glas, uint32_t coffee, uint32_t water, uint32_t sugar, uint32_t milk) const
 {
 	using namespace std;
 	switch (glas)
 	{
 	case SMALL:
-		cout << "\n\t" << str << " Small glass ingridients\n";
+		cout << "\n\t" << name << " Small's glass ingridients\n";
 		break;
 
 	case MIDD:
-		cout << "\n\t" << str << " Middle glass ingridients\n";
+		cout << "\n\t" << name << " Middle's glass ingridients\n";
 		break;
 
 	case BIG:
-		cout << "\n\t Big glass ingridients\n";
+		cout << "\n\t" << name << " Big's glass ingridients\n";
 		break;
 
 	default:
