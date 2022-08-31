@@ -54,6 +54,7 @@ private:
 	uint32_t GetExpectedWaterForGlass(Glasses glass, uint32_t water, uint32_t sugar, uint32_t milk);
 
 	bool IsValidRecepte(uint32_t water, uint32_t sugar, uint32_t milk);
+	bool IsValid(uint32_t coffee, uint32_t water, uint32_t sugar, uint32_t milk);
 
 	void Print(uint32_t coffee, uint32_t water, uint32_t sugar, uint32_t milk) const;
 	void Print(char const* str, Glasses glass, uint32_t coffee, uint32_t water, uint32_t sugar, uint32_t milk) const;

@@ -95,17 +95,7 @@ bool MyCoffeeMachine::MakeAmericano(Glasses glass)
 		return false;
 	}
 
-	if (expectedCoffee > m_coffee)
-	{
-		return false;
-	}
-
-	if (expectedMilk > m_milk)
-	{
-		return false;
-	}
-
-	if (expectedWater > m_water)
+	if (!IsValid(expectedCoffee, expectedWater, expectedSugar, expectedMilk))
 	{
 		return false;
 	}
@@ -119,9 +109,37 @@ bool MyCoffeeMachine::MakeAmericano(Glasses glass)
 	return true;
 }
 
-bool MyCoffeeMachine::MakeLatte(Glasses)
+bool MyCoffeeMachine::MakeLatte(Glasses glass)
 {
-	return false;
+	uint32_t expected = static_cast<uint32_t>(glass);
+	uint32_t total = GetTotalVolume();
+	uint32_t expectedCoffee = GetExpectedCoffeForGlass(glass);
+	uint32_t expectedMilk = GetExpectedMilkForGlass(glass, m_lateWater, m_lateSugar,
+		m_lateMilk);
+
+	uint32_t expectedSugar = GetExpectedSugarForGlass(glass, m_lateWater, m_lateSugar,
+		m_lateMilk);
+
+	uint32_t expectedWater = GetExpectedWaterForGlass(glass, m_lateWater, m_lateSugar,
+		m_lateMilk);
+
+	if (expected > total)
+	{
+		return false;
+	}
+
+	if (!IsValid(expectedCoffee, expectedWater, expectedSugar, expectedMilk))
+	{
+		return false;
+	}
+
+	m_coffee -= expectedCoffee;
+	m_milk -= expectedMilk;
+	m_sugar -= expectedSugar;
+	m_water -= expectedWater;
+
+	PrintLatte(glass, expectedCoffee, expectedWater, expectedSugar, expectedMilk);
+	return true;
 }
 
 uint32_t MyCoffeeMachine::GetTotalVolume() const
@@ -195,6 +213,31 @@ bool MyCoffeeMachine::IsValidRecepte(uint32_t water, uint32_t sugar, uint32_t mi
 	{
 		return false;
 	}
+	return true;
+}
+
+bool MyCoffeeMachine::IsValid(uint32_t coffee, uint32_t water, uint32_t sugar, uint32_t milk)
+{
+	if (coffee > m_coffee)
+	{
+		return false;
+	}
+
+	if (milk > m_milk)
+	{
+		return false;
+	}
+
+	if (water > m_water)
+	{
+		return false;
+	}
+
+	if (sugar > m_sugar)
+	{
+		return false;
+	}
+
 	return true;
 }
 
