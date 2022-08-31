@@ -39,5 +39,9 @@ public:
 	bool AddWater(uint32_t water);
 
 	bool SetAmericanoRecipe(uint32_t water, uint32_t sugar, uint32_t milk) override;
+	bool SetLatteRecipe(uint32_t water, uint32_t sugar, uint32_t milk) override;
+
+private:
+	bool Set(uint32_t water, uint32_t sugar, uint32_t milk);
 };
 

@@ -50,6 +50,31 @@ bool MyCoffeeMachine::AddWater(uint32_t water)
 
 bool MyCoffeeMachine::SetAmericanoRecipe(uint32_t water, uint32_t sugar, uint32_t milk)
 {
-	return false;
+	return Set(water, sugar, milk);
+}
+
+bool MyCoffeeMachine::SetLatteRecipe(uint32_t water, uint32_t sugar, uint32_t milk)
+{
+	return Set(water, sugar, milk);
+}
+
+bool MyCoffeeMachine::Set(uint32_t water, uint32_t sugar, uint32_t milk)
+{
+	if (waterTankVol < water)
+	{
+		return false;
+	}
+
+	if (sugarTankVol < sugar)
+	{
+		return false;
+	}
+
+	if (milkTankVol < milk)
+	{
+		return false;
+	}
+
+	return true;
 }
 
