@@ -181,19 +181,19 @@ uint32_t MyCoffeeMachine::GetExpectedCoffeForGlass(Glasses glass)
 
 uint32_t MyCoffeeMachine::GetExpectedMilkForGlass(Glasses glass, uint32_t water, uint32_t sugar, uint32_t milk)
 {
-	double d_milk = 1.0 * static_cast<double>(glass) * milk / (water + sugar + milk);
+	double d_milk = GetExpextedComponent(glass, milk, water, sugar);
 	return static_cast<uint32_t>(ceil(d_milk));
 }
 
 uint32_t MyCoffeeMachine::GetExpectedSugarForGlass(Glasses glass, uint32_t water, uint32_t sugar, uint32_t milk)
 {
-	double d_sugar = 1.0 * static_cast<double>(glass) * sugar / (water + sugar + milk);
+	double d_sugar = GetExpextedComponent(glass, sugar, water, milk);
 	return static_cast<uint32_t>(ceil(d_sugar));
 }
 
 uint32_t MyCoffeeMachine::GetExpectedWaterForGlass(Glasses glass, uint32_t water, uint32_t sugar, uint32_t milk)
 {
-	double d_water = 1.0 * static_cast<double>(glass) * water / (water + sugar + milk);
+	double d_water = GetExpextedComponent(glass, water, sugar, milk);
 	return static_cast<uint32_t>(ceil(d_water));
 }
 
@@ -274,5 +274,10 @@ void MyCoffeeMachine::Print(char const* str, Glasses glas, uint32_t coffee, uint
 	}
 
 	Print(coffee, water, sugar, milk);
+}
+
+double MyCoffeeMachine::GetExpextedComponent(Glasses glass, uint32_t comp, uint32_t second, uint32_t third) const
+{
+	return static_cast<double>(glass) * comp / (comp + second + third);
 }
 
