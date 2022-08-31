@@ -2,8 +2,8 @@
 class ICoffeeMachine {
 public:
  virtual ~ICoffeуMachine() {}
- virtual bool MakeAmericano() = 0;
- virtual bool MakeLatte() = 0;
+ virtual bool MakeAmericano(Glasses) = 0;
+ virtual bool MakeLatte(Glasses) = 0;
 };
 
 class ICoffeeMachineRecipe {

@@ -47,3 +47,9 @@ bool MyCoffeeMachine::AddWater(uint32_t water)
 	m_water += water;
 	return true;
 }
+
+bool MyCoffeeMachine::SetAmericanoRecipe(uint32_t water, uint32_t sugar, uint32_t milk)
+{
+	return false;
+}
+
