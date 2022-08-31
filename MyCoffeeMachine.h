@@ -59,5 +59,6 @@ private:
 	void Print(uint32_t coffee, uint32_t water, uint32_t sugar, uint32_t milk) const;
 	void Print(char const* str, Glasses glass, uint32_t coffee, uint32_t water, uint32_t sugar, uint32_t milk) const;
 	double GetExpextedComponent(Glasses glass, uint32_t comp, uint32_t second, uint32_t third) const;
+	bool AddComponent(uint32_t& comp, uint32_t addValue, uint32_t max);
 };
 

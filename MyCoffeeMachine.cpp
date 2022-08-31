@@ -12,42 +12,22 @@ void MyCoffeeMachine::Load()
 
 bool MyCoffeeMachine::AddCoffee(uint32_t coffee)
 {
-	if (coffee + m_coffee> coffeeTankVol)
-	{
-		return false;
-	}
-	m_coffee+= coffee;
-	return true;
+	return AddComponent(m_coffee, coffee, coffeeTankVol);
 }
 
 bool MyCoffeeMachine::AddMilk(uint32_t milk)
 {
-	if (milk + m_milk > milkTankVol)
-	{
-		return false;
-	}
-	m_milk += milk;
-	return true;
+	return AddComponent(m_milk, milk, milkTankVol);
 }
 
 bool MyCoffeeMachine::AddSugar(uint32_t sugar)
 {
-	if (sugar + m_sugar > sugarTankVol)
-	{
-		return false;
-	}
-	m_sugar += sugar;
-	return true;
+	return AddComponent(m_sugar, sugar, sugarTankVol);
 }
 
 bool MyCoffeeMachine::AddWater(uint32_t water)
 {
-	if (water + m_water > waterTankVol)
-	{
-		return false;
-	}
-	m_water += water;
-	return true;
+	return AddComponent(m_water, water, waterTankVol);
 }
 
 bool MyCoffeeMachine::SetAmericanoRecipe(uint32_t water, uint32_t sugar, uint32_t milk)
@@ -278,6 +258,16 @@ void MyCoffeeMachine::Print(char const* str, Glasses glas, uint32_t coffee, uint
 
 double MyCoffeeMachine::GetExpextedComponent(Glasses glass, uint32_t comp, uint32_t second, uint32_t third) const
 {
-	return static_cast<double>(glass) * comp / (comp + second + third);
+	return static_cast<double>(glass) * comp / (1.0 *comp + second + third);
+}
+
+bool MyCoffeeMachine::AddComponent(uint32_t& comp, uint32_t value, uint32_t max)
+{
+	if (comp + value > max)
+	{
+		return false;
+	}
+	comp += value;
+	return true;
 }
 
