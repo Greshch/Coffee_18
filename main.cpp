@@ -16,13 +16,36 @@ int main() {
 	}
 
 	machine.PrintRecipes();
-	std::cout << "Choose name of recepi: ";
-	std::string name;
-	std::cin >> name;
-	if (machine.MakeRecept(name, Glasses::SMALL))
+	std::cout << "Choose recept of recepi: ";
+	std::string recept;
+	std::cin >> recept;
+
+	std::cout << "Choose size of glass(1 - GlasWgSmall, 2 - GlasWgMiddle, 3 - GlasWgBig): ";
+	short size;
+	std::cin >> size;
+	bool result = false;
+
+	if (size == GlassesType::GlassTypeSmall)
 	{
-		Recept* recipe = machine.GetRecipe(name);
-		machine.Print(recipe, Glasses::SMALL);
+		result = machine.MakeSmallGlassByRecept(recept);
 	}
+	else if (size == GlassesType::GlassTypeMidd)
+	{
+		result = machine.MakeMiddleGlassByRecept(recept);
+	}
+	else if (size == GlassesType::GlassTypeBig)
+	{
+		result = machine.MakeBigGlassByRecept(recept);
+	}
+	
+	if (result == true)
+	{
+		machine.Print(recept, static_cast<GlassesType>(size));
+	}
+	else
+	{
+		std::cout << "Error make drink..Sorry...\n";
+	}
+	
 	return 0;
 }

@@ -17,5 +17,5 @@ public:
 	virtual ~ICoffeeMachineRecipe() = default;
 	
 	virtual bool SetRecipe(uint32_t milk, uint32_t sugar, uint32_t water, std::string const& name) = 0;
-	virtual Recept* GetRecipe(std::string const& name) = 0;
+	virtual Recept const* GetRecipe(std::string const& name) const = 0;
 };
