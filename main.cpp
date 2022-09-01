@@ -16,7 +16,7 @@ int main() {
 	}
 
 	machine.PrintRecipes();
-	std::cout << "Choose recept of recepi: ";
+	std::cout << "Choose recept: ";
 	std::string recept;
 	std::cin >> recept;
 
